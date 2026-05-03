@@ -595,27 +595,7 @@
         Click any ninja card to visit their website or see their first hand-written page! 🎉
       </p>
 
-      <!-- ════════════════════════════════════════════════════════════════════
-           ✏️  GOOGLE SHEET CONFIGURATION — EDIT THIS BLOCK
-           ════════════════════════════════════════════════════════════════════
-           1. Make a copy of the template sheet provided.
-           2. Publish it to the web:
-              Sheet → File → Share → Publish to web → CSV → Publish
-           3. Copy the CSV URL and paste it below as SHEET_CSV_URL.
-
-           Your URL will look like:
-           https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/export?format=csv&gid=0
-      ════════════════════════════════════════════════════════════════════════ -->
-
-      <div id="students-grid">
-        <div id="students-status">⚡ Loading student data...</div>
-      </div>
-
-      <div class="dev-note" id="dev-note">
-        <strong>🛠️ Developer Note:</strong> Edit the <code>SHEET_CSV_URL</code> constant in the
-        <code>&lt;script&gt;</code> block at the bottom of this file to point to your published
-        Google Sheet CSV URL. See the Excel template for the required column names.
-      </div>
+      <div id="students-grid"></div>
     </div>
   </section>
 
@@ -634,146 +614,118 @@
 
 <!-- ═══════════════════════════════════ SCRIPT ══════════════════════════════════ -->
 <script>
-  /* ══════════════════════════════════════════════════════════════════════════════
-     ✏️  STEP 1: PASTE YOUR GOOGLE SHEET CSV URL HERE
-     ══════════════════════════════════════════════════════════════════════════════
-     How to get the URL:
-       1. Open your Google Sheet.
-       2. Go to File → Share → Publish to the web.
-       3. Choose: Entire Document | CSV | Publish.
-       4. Copy the link and replace the string below.
 
-     Example URL format:
-     https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE/pub?output=csv
-  ══════════════════════════════════════════════════════════════════════════════ */
-  const SHEET_CSV_URL = "PASTE_YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+/* ████████████████████████████████████████████████████████████████████████████████
+   ✏️  EDIT STUDENT DATA HERE — just fill in each student's details below.
+   ────────────────────────────────────────────────────────────────────────────────
+   HOW TO EDIT:
+     • name       → Student's full name
+     • grade      → "Grade 4" / "Grade 5" / "Grade 6" / "Grade 7"
+     • photo      → Paste a direct image URL, OR a Google Drive share link
+                    (share link format: https://drive.google.com/file/d/FILE_ID/view)
+     • paper      → Same as photo, but for the photo of their hand-written page
+     • website    → URL to their published website (leave "" if not ready yet)
 
-  /* ══════════════════════════════════════════════════════════════════════════════
-     ✏️  STEP 2 (optional): Set to true to show the developer hint note
-  ══════════════════════════════════════════════════════════════════════════════ */
-  const SHOW_DEV_NOTES = true;
+   HOW TO ADD A PHOTO FROM GOOGLE DRIVE:
+     1. Upload photo to Google Drive
+     2. Right-click → Share → "Anyone with the link" → Copy link
+     3. Paste that link as the photo or paper value below
 
-  /* ══════════════════════════════════════════════════════════════════════════════
-     CSV PARSER — no libraries needed
-  ══════════════════════════════════════════════════════════════════════════════ */
-  function parseCSV(text) {
-    const rows = [];
-    const lines = text.trim().split("\n");
-    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g, ""));
-    for (let i = 1; i < lines.length; i++) {
-      const vals = lines[i].match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g) || [];
-      const row = {};
-      headers.forEach((h, idx) => {
-        row[h] = (vals[idx] || "").trim().replace(/^"|"$/g, "");
-      });
-      rows.push(row);
-    }
-    return rows;
-  }
+   Leave any field as "" if you don't have it yet — the card still shows up.
+████████████████████████████████████████████████████████████████████████████████ */
 
-  /* ══════════════════════════════════════════════════════════════════════════════
-     GOOGLE DRIVE IMAGE PROXY
-     If photo URLs are Google Drive share links, convert them to direct image URLs.
-     Supports: drive.google.com/file/d/FILE_ID/view
-  ══════════════════════════════════════════════════════════════════════════════ */
-  function driveDirectUrl(url) {
-    if (!url) return "";
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
-    return url;
-  }
+const STUDENTS = [
+  // ── FORMAT: { name, grade, photo, paper, website }
+  // ── EXAMPLE (delete or replace with real student):
+  { name: "Student 1",  grade: "Grade 4", photo: "", paper: "", website: "" },
+  { name: "Student 2",  grade: "Grade 4", photo: "", paper: "", website: "" },
+  { name: "Student 3",  grade: "Grade 4", photo: "", paper: "", website: "" },
+  { name: "Student 4",  grade: "Grade 4", photo: "", paper: "", website: "" },
+  { name: "Student 5",  grade: "Grade 4", photo: "", paper: "", website: "" },
+  { name: "Student 6",  grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 7",  grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 8",  grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 9",  grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 10", grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 11", grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 12", grade: "Grade 5", photo: "", paper: "", website: "" },
+  { name: "Student 13", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 14", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 15", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 16", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 17", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 18", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 19", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 20", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 21", grade: "Grade 6", photo: "", paper: "", website: "" },
+  { name: "Student 22", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 23", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 24", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 25", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 26", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 27", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 28", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 29", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 30", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 31", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 32", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 33", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 34", grade: "Grade 7", photo: "", paper: "", website: "" },
+  { name: "Student 35", grade: "Grade 7", photo: "", paper: "", website: "" },
+];
 
-  /* ══════════════════════════════════════════════════════════════════════════════
-     BUILD STUDENT CARDS
-     Expected CSV columns (case-sensitive):
-       Name          — student's full name
-       Grade         — e.g. "Grade 5"
-       PhotoURL      — URL to student photo (Google Drive share link or direct URL)
-       PaperURL      — URL to photo of their hand-written page (same format)
-       WebsiteURL    — URL to their published website
-  ══════════════════════════════════════════════════════════════════════════════ */
-  function buildStudentCards(students) {
-    const grid = document.getElementById("students-grid");
-    grid.innerHTML = "";
+/* ████████████████████████████████████████████████████████████████████████████████
+   ── DO NOT EDIT BELOW THIS LINE ──────────────────────────────────────────────
+████████████████████████████████████████████████████████████████████████████████ */
 
-    if (!students.length) {
-      grid.innerHTML = `<div id="students-status">No student data found. Check your sheet!</div>`;
-      return;
-    }
+function driveDirectUrl(url) {
+  if (!url) return "";
+  const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  return url;
+}
 
-    students.forEach((s, i) => {
-      const name      = s["Name"]       || "Student " + (i + 1);
-      const grade     = s["Grade"]      || "";
-      const photoUrl  = driveDirectUrl(s["PhotoURL"]  || "");
-      const paperUrl  = driveDirectUrl(s["PaperURL"]  || "");
-      const websiteUrl= s["WebsiteURL"] || "";
+function buildStudentCards() {
+  const grid = document.getElementById("students-grid");
+  grid.innerHTML = "";
 
-      // --- Photo element
-      let photoEl;
-      if (photoUrl) {
-        photoEl = `<img class="student-photo" src="${photoUrl}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                   <div class="student-photo-placeholder" style="display:none">🥷</div>`;
-      } else {
-        photoEl = `<div class="student-photo-placeholder">🥷</div>`;
-      }
+  STUDENTS.forEach((s, i) => {
+    const photoUrl   = driveDirectUrl(s.photo);
+    const paperUrl   = driveDirectUrl(s.paper);
+    const websiteUrl = s.website || "";
 
-      // --- Action links
-      let links = "";
-      if (websiteUrl) links += `<a class="s-btn website" href="${websiteUrl}" target="_blank" rel="noopener">🌐 Website</a>`;
-      if (paperUrl)   links += `<a class="s-btn paper"   href="${paperUrl}"   target="_blank" rel="noopener">📝 Paper</a>`;
+    const photoEl = photoUrl
+      ? `<img class="student-photo" src="${photoUrl}" alt="${s.name}" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="student-photo-placeholder" style="display:none">🥷</div>`
+      : `<div class="student-photo-placeholder">🥷</div>`;
 
-      const card = document.createElement("div");
-      card.className = "student-card";
-      card.style.animationDelay = (i * 40) + "ms";
-      card.innerHTML = `
-        ${photoEl}
-        <div class="student-info">
-          <div class="student-name">${name}</div>
-          <div class="student-grade">${grade}</div>
-        </div>
-        <div class="student-links">${links || '<span style="font-size:0.8rem;color:#999;padding:0 4px">Coming soon…</span>'}</div>
-      `;
-      grid.appendChild(card);
-    });
-  }
+    let links = "";
+    if (websiteUrl) links += `<a class="s-btn website" href="${websiteUrl}" target="_blank" rel="noopener">🌐 Website</a>`;
+    if (paperUrl)   links += `<a class="s-btn paper"   href="${paperUrl}"   target="_blank" rel="noopener">📝 Paper</a>`;
+    if (!links)     links  = `<span style="font-size:0.8rem;color:#999;padding:0 4px">Coming soon…</span>`;
 
-  /* ══════════════════════════════════════════════════════════════════════════════
-     FETCH DATA FROM GOOGLE SHEET
-  ══════════════════════════════════════════════════════════════════════════════ */
-  async function loadStudents() {
-    const statusEl = document.getElementById("students-status");
+    const card = document.createElement("div");
+    card.className = "student-card";
+    card.innerHTML = `
+      ${photoEl}
+      <div class="student-info">
+        <div class="student-name">${s.name}</div>
+        <div class="student-grade">${s.grade}</div>
+      </div>
+      <div class="student-links">${links}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
 
-    if (SHEET_CSV_URL === "https://docs.google.com/spreadsheets/d/e/2PACX-1vR0QmNIhvznfNT19ZdQznUOBGE_w5EQHaEbhCgi2gmzql7OEG0azxTL7H5D7fd9Cw/pub?output=csv") {
-      statusEl.innerHTML = `⚠️ No sheet connected yet. Edit <b>SHEET_CSV_URL</b> in the script.`;
-      return;
-    }
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+}, { threshold: 0.1 });
+document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
 
-    try {
-      // Use a CORS proxy if needed; the published Google Sheet CSV is publicly accessible
-      const resp = await fetch(SHEET_CSV_URL);
-      if (!resp.ok) throw new Error("HTTP " + resp.status);
-      const text = await resp.text();
-      const students = parseCSV(text);
-      buildStudentCards(students);
-    } catch (err) {
-      statusEl.innerHTML = `❌ Could not load sheet. Make sure it's published as CSV.<br><small>${err.message}</small>`;
-      console.error(err);
-    }
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════════════
-     SCROLL REVEAL
-  ══════════════════════════════════════════════════════════════════════════════ */
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-
-  /* ══════════════════════════════════════════════════════════════════════════════
-     INIT
-  ══════════════════════════════════════════════════════════════════════════════ */
-  if (SHOW_DEV_NOTES) document.getElementById("dev-note").style.display = "block";
-  loadStudents();
+buildStudentCards();
 </script>
 
 </body>
