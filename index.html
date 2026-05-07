@@ -231,14 +231,19 @@
       flex-wrap: wrap;
     }
     .instructor-avatar {
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      border: 5px solid var(--orange);
-      box-shadow: var(--shadow);
-      background: var(--panel-bg);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-      flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: auto;
+  border: 3px solid #fff;
+}
+
+.instructor-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
     }
     .instructor-info h3 {
       font-family: 'Bangers', cursive;
@@ -521,7 +526,9 @@
     <div class="panel-header"><span class="icon">👨‍💻</span> CAMP SENSEI (INSTRUCTOR)</div>
     <div class="panel-body">
       <div class="instructor-card">
-        <div class="instructor-photo">Nikhil_Dewalkar.png</div>
+       <div class="instructor-avatar">
+  <img src="Nikhil_Dewalkar.png" alt="Nikhil Dewalkar">
+</div>
         <div class="instructor-info">
           <!-- ════════════════════════════════════════════════════════════════
                ✏️  EDIT YOUR INFO BELOW
